@@ -57,7 +57,7 @@ const Navbar = () => {
                 href="/"
                 className={`${getLinkClass('/')} px-3 py-2 rounded-md text-sm font-medium no-underline`}
               >
-                Ho
+                Home
               </a>
               <a
                 href="/about"
