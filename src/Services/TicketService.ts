@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/tickets/'; // Replace with your actual API URL
+const API_URL = 'https://api.plvcmonline.uk/api/tickets/'; // Replace with your actual API URL
 
 export interface TicketData {
     full_name: string;
