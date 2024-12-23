@@ -118,7 +118,7 @@ const ContactSection = () => {
                   <div className="absolute top-0 left-0 bg-orange-500 w-1 h-8"></div>
                   <div className="px-8">
                     <h2 className="text-xl font-bold font-heading mb-6">Technical Help desk</h2>
-                    <a className="w-full sm:w-auto h-12 py-3 px-5 rounded-full bg-purple-900 border border-purple-700 hover:bg-purple-800 focus:ring focus:ring-purple-800 transition duration-200 inline-flex items-center justify-center gap-2" href="#">
+                    <a className="w-full sm:w-auto h-12 py-3 px-5 rounded-full bg-purple-900 border border-purple-700 hover:bg-purple-800 focus:ring focus:ring-purple-800 transition duration-200 inline-flex items-center justify-center gap-2" href="/contact/raiseticket">
                       <span className="text-white text-sm font-semibold">Visit FAQ Center</span>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <path d="M5 10H15.4167M15.4167 10L10.4167 5M15.4167 10L10.4167 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>

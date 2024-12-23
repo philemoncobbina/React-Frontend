@@ -74,8 +74,8 @@ const HomeHero = () => {
                   </div>
                 </div>
               </div>
-              <a href="#contact" className="inline-block rounded-md border border-transparent bg-black px-8 py-3 text-center font-medium text-white hover:bg-indigo-700">
-                Contact Us
+              <a href="/admission" className="inline-block rounded-md border border-transparent bg-black px-8 py-3 text-center font-medium text-white hover:bg-indigo-700">
+                Enrol Now 
               </a>
             </div>
           </div>
