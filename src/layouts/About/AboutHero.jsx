@@ -19,7 +19,7 @@ const AboutHero = () => {
             <h1 className="font-heading mb-4 text-4xl lg:text-5xl text-white font-extrabold">
               About Our School
             </h1>
-            <p className="mb-6 text-lg text-gray-300">
+            <p className="mb-6 text-lg text-gray-100 leading-relaxed">
               Our school is committed to providing a nurturing and challenging environment where students can achieve academic excellence and personal growth. Learn more about our mission, vision, and the values that drive us.
             </p>
             <div className="flex space-x-4">
