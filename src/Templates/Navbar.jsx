@@ -204,7 +204,7 @@ const Navbar = () => {
           </a>
           {user ? (
             <>
-              <a href="/profile" className="block px-3 py-2 rounded-md text-base font-medium no-underline text-gray-500 hover:text-gray-700">
+              <a href="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium no-underline text-gray-500 hover:text-gray-700">
                 Profile
               </a>
               <a onClick={handleLogout} className="block cursor-pointer px-3 py-2 rounded-md text-base font-medium no-underline text-red-600 hover:text-red-800">

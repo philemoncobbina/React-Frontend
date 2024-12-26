@@ -28,7 +28,7 @@ const WorkHours = () => {
       {/* Centered button */}
       <div className="flex justify-center">
   <a
-    href="/reservation"
+    href="/contact/reservation"
     className="py-2 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
   >
     Schedule a Visit to Our Campus
