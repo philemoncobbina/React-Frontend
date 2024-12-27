@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import { signUp, googleSignIn } from '../../Services/signup';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +16,7 @@ const SignupForm = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -74,8 +75,19 @@ const SignupForm = () => {
         const response = await signUp(submissionData);
 
         if (response.success) {
-          // Handle successful signup (e.g., redirect, show success message)
-          window.location.href = '/dashboard';
+          setShowSuccessAlert(true);
+          // Reset form
+          setFormData({
+            first_name: '',
+            last_name: '',
+            email: '',
+            password: '',
+            confirmPassword: ''
+          });
+          // Hide success alert after 5 seconds
+          setTimeout(() => {
+            setShowSuccessAlert(false);
+          }, 5000);
         } else {
           setErrors({ submit: response.error || 'Signup failed' });
         }
@@ -117,6 +129,13 @@ const SignupForm = () => {
           Create Your Account
         </h2>
         
+        {showSuccessAlert && (
+          <div className="mb-4 p-4 rounded-lg bg-green-50 border border-green-200 flex items-center gap-2">
+            <CheckCircle2 className="text-green-500 w-5 h-5" />
+            <p className="text-green-700">Account created successfully! Thank you for signing up.</p>
+          </div>
+        )}
+
         {errors.submit && (
           <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg mb-4 text-center">
             {errors.submit}

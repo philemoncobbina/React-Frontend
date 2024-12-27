@@ -10,7 +10,7 @@ const BlogSection = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-screen-xl mx-auto">
+    <div className="w-full mt-9 p-3 max-w-screen-xl mx-auto">
       <div className="text-center mb-8">
         <h3 className="mb-2 text-lg font-semibold text-indigo-600">From Our Students</h3>
         <h2 className="mb-4 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl md:text-40 md:leading-1.2">Student Blogs</h2>
