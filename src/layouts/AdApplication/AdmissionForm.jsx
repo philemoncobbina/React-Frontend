@@ -53,7 +53,7 @@ const AdmissionForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg">
+        <form onSubmit={handleSubmit} style={{ marginTop: '8rem' }} className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg">
             {successMessage && (
                 <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
                     <span className="block sm:inline">{successMessage}</span>

@@ -8,7 +8,7 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
 
     useEffect(() => {
         // Fetch country names from REST API
-        axios.get('https://restcountries.com/v3.1/all')
+        axios.get('https://restcountries.com/v3.1/alpha/170')
             .then(response => {
                 const countryNames = response.data.map(country => country.name.common);
                 setCountries(countryNames.sort());

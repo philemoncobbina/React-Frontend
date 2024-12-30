@@ -36,7 +36,8 @@ const EditAdmission = () => {
     medical_conditions: '',
     allergies: '',
     disabilities: '',
-    vaccinated: ''
+    vaccinated: '',
+    status: 'pending' // Added status field
   });
   const [originalData, setOriginalData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -69,18 +70,18 @@ const EditAdmission = () => {
   };
 
   const handleEditClick = (e) => {
-    e.preventDefault(); // Prevent default action
-    console.log('Edit button clicked'); // Debugging line
+    e.preventDefault();
+    console.log('Edit button clicked');
     setIsEditing(true);
   };
 
   const handleCancelEdit = () => {
-    setFormData(originalData); // Reset form data to original
+    setFormData(originalData);
     setIsEditing(false);
   };
 
   const handleSaveChanges = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     try {
       await admissionService.editStudent(id, formData);
       alert('Student updated successfully!');
@@ -111,53 +112,73 @@ const EditAdmission = () => {
 
   if (error) return <div>{error}</div>;
 
+  // Check if admission is approved
+  const isApproved = formData.status === 'approved';
+
+  // Helper function to render action buttons
+  const renderActionButtons = () => {
+    if (isEditing) {
+      return (
+        <>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-green-500 text-white rounded-md"
+          >
+            Save Changes
+          </button>
+          <button
+            type="button"
+            onClick={handleCancelEdit}
+            className="ml-4 px-4 py-2 bg-gray-500 text-white rounded-md"
+          >
+            Cancel
+          </button>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <button
+          type="button"
+          onClick={handleEditClick}
+          className={`px-4 py-2 ${isApproved ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500'} text-white rounded-md`}
+          disabled={isApproved}
+          title={isApproved ? "Cannot edit approved admissions" : "Edit admission"}
+        >
+          <FaEdit className="inline mr-2" /> Edit
+        </button>
+        <button
+          type="button"
+          onClick={handleDeleteClick}
+          className={`ml-4 px-4 py-2 ${isApproved ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-500'} text-white rounded-md`}
+          disabled={isApproved}
+          title={isApproved ? "Cannot delete approved admissions" : "Delete admission"}
+        >
+          <FaTrashAlt className="inline mr-2" /> Delete
+        </button>
+      </>
+    );
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Edit Admission</h1>
-      <form onSubmit={handleSaveChanges} className="space-y-6" >
-        <PersonalInformation formData={formData} handleChange={handleChange} editable={isEditing} />
-        <ParentGuardianInformation formData={formData} handleChange={handleChange} editable={isEditing} />
-        <EducationHistory formData={formData} handleChange={handleChange} editable={isEditing} />
-        <HealthInformation formData={formData} handleChange={handleChange} editable={isEditing} />
+      {isApproved && (
+        <div className="mb-4 p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+          This admission has been approved and cannot be modified or deleted.
+        </div>
+      )}
+      <form onSubmit={handleSaveChanges} className="space-y-6">
+        <PersonalInformation formData={formData} handleChange={handleChange} editable={isEditing && !isApproved} />
+        <ParentGuardianInformation formData={formData} handleChange={handleChange} editable={isEditing && !isApproved} />
+        <EducationHistory formData={formData} handleChange={handleChange} editable={isEditing && !isApproved} />
+        <HealthInformation formData={formData} handleChange={handleChange} editable={isEditing && !isApproved} />
         <div className="mt-4">
-          {!isEditing ? (
-            <>
-              <button
-                type="button"
-                onClick={handleEditClick}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md"
-              >
-                <FaEdit className="inline mr-2" /> Edit
-              </button>
-              <button
-                type="button"
-                onClick={handleDeleteClick}
-                className="ml-4 px-4 py-2 bg-red-500 text-white rounded-md"
-              >
-                <FaTrashAlt className="inline mr-2" /> Delete
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-green-500 text-white rounded-md"
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
-                onClick={handleCancelEdit}
-                className="ml-4 px-4 py-2 bg-gray-500 text-white rounded-md"
-              >
-                Cancel
-              </button>
-            </>
-          )}
+          {renderActionButtons()}
         </div>
       </form>
 
-      {/* Confirmation Modal */}
       <ConfirmationModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
