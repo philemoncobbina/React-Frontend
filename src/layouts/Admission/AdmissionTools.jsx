@@ -72,10 +72,10 @@ const AdmissionTools = () => {
                     <div className="md:hidden w-px h-24 bg-gray-200"></div>
                   </div>
                   <div className="flex-1 p-4">
-                     <a href="your-link-here" className="font-heading mb-3 text-2xl text-gray-900 font-bold">
+                     <a href="/contact/reservation" className="font-heading mb-3 text-2xl text-gray-900 font-bold">
   <h4>Schedule a Visit</h4>
 </a>
-                    <p className="text-gray-700 font-bold">Explore the vibrant campus life and extracurricular activities we offer. <br />  <a href="your-link-here" className="text-blue-500 hover:text-blue-700">Read More</a></p>
+                    <p className="text-gray-700 font-bold">Explore the vibrant campus life and extracurricular activities we offer. <br />  <a href="/contact/reservation" className="text-blue-500 hover:text-blue-700">Read More</a></p>
                     
                   </div>
                 </div>

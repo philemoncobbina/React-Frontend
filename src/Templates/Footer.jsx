@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaPaperPlane, FaEnvelope, FaTimes } from 'react-icons/fa';
 import axios from 'axios';
+import { X } from "lucide-react";
 
 const Footer = () => {
   const [full_name, setFullName] = useState('');
@@ -74,6 +75,33 @@ const Footer = () => {
               </button>
             </div>
           )}
+          {isModalOpen && (
+                      <div  className="fixed inset-0 flex items-center justify-center z-50">
+                          <div className="fixed inset-0 bg-black opacity-50"></div>
+                          <div className="bg-white rounded-lg p-6 max-w-sm mx-4 relative z-50 shadow-xl">
+                              <button
+                                  onClick={() => setIsModalOpen(false)}
+                                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+                              >
+                                  <X size={20} />
+                              </button>
+                              <div className="mb-1">
+                                  <div className="h-12 w-12 rounded-full bg-green-100 mx-auto flex items-center justify-center">
+                                      <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                      </svg>
+                                  </div>
+                              </div>
+                              <h3 className="text-lg font-semibold text-center text-gray-900 mt-4">
+                                  Success
+                              </h3>
+                              <p className="mt-2 text-center text-gray-600">
+                              Subscribed successfully!
+                              </p>
+                          </div>
+                      </div>
+                  )}
+                  
           
           <form onSubmit={handleSubmit} className="w-full max-w-lg flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
             <div className="w-full">
@@ -107,20 +135,7 @@ const Footer = () => {
         </div>
         
         {/* Modal for Success Message */}
-        {isModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-              <h2 className="text-gray-900 font-bold text-lg">Success</h2>
-              <p className="text-gray-600 mt-2">Your message has been sent successfully!</p>
-              <button
-                className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                onClick={() => setIsModalOpen(false)}
-              >
-                OK
-              </button>
-            </div>
-          </div>
-        )}
+        
 
         {/* Social and other sections */}
          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

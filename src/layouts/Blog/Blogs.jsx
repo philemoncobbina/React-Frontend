@@ -14,7 +14,7 @@ const Blogs = () => {
   }, []);
 
   return (
-    <div className="mt-12 mx-auto max-w-screen-lg px-4">
+    <div style={{ marginTop: '5rem' }} className=" mx-auto max-w-screen-lg px-4">
       <div className="flex flex-wrap -mx-2">
         {firstTwoBlogs.map(blog => (
           <div key={blog.id} className="w-full md:w-1/2 px-2 mb-4">

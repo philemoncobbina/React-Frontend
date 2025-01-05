@@ -2,16 +2,8 @@ import React, { useState } from "react";
 import moment from "moment";
 import { DatePickerWithPresets } from "./DatePickerWithPresets";
 import { postReservation } from "../../Services/ReservationService";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+
 
 const Reservation = () => {
   const [fullName, setFullName] = useState('');
@@ -23,6 +15,7 @@ const Reservation = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState(null);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  
 
   const handleTimeChange = (event) => {
     const selectedTime = event.target.value;
@@ -203,25 +196,34 @@ const Reservation = () => {
           </div>
         </div>
       </div>
+      {isAlertOpen && (
+                      <div open={isAlertOpen} onOpenChange={setIsAlertOpen} className="fixed inset-0 flex items-center justify-center z-50">
+                          <div className="fixed inset-0 bg-black opacity-50"></div>
+                          <div className="bg-white rounded-lg p-6 max-w-sm mx-4 relative z-50 shadow-xl">
+                              <button
+                                  onClick={() => setIsAlertOpen(false)}
+                                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+                              >
+                                  <X size={20} />
+                              </button>
+                              <div className="mb-1">
+                                  <div className="h-12 w-12 rounded-full bg-green-100 mx-auto flex items-center justify-center">
+                                      <svg className="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                      </svg>
+                                  </div>
+                              </div>
+                              <h3 className="text-lg font-semibold text-center text-gray-900 mt-4">
+                                  Success
+                              </h3>
+                              <p className="mt-2 text-center text-gray-600">
+                                  Reservation Booked successfully!
+                              </p>
+                          </div>
+                      </div>
+                  )}
 
-      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Reservation Confirmed</AlertDialogTitle>
-          </AlertDialogHeader>
-          <AlertDialogDescription>
-            Your reservation has been successfully submitted!
-          </AlertDialogDescription>
-          <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => setIsAlertOpen(false)}
-              className="bg-indigo-600 text-white rounded-lg px-4 py-2"
-            >
-              OK
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      
     </section>
   );
 };

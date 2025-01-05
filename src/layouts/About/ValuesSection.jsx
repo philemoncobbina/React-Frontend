@@ -26,8 +26,8 @@ const ValuesSection = () => {
   ];
 
   return (
-    <section className="relative md:py-24 bg-gray-100 overflow-hidden">
-      <div className="relative container px-4 mx-auto">
+    <section className="relative  md:py-24 bg-gray-100 overflow-hidden">
+      <div className="relative pt-4 mb-6 container px-4 mx-auto">
         <div className="max-w-2xl lg:max-w-3xl mx-auto xl:max-w-7xl">
           <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl mb-8">Our Founding Values</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">

@@ -163,7 +163,7 @@ const DashboardTable = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow-lg rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white  shadow-lg rounded-xl border border-gray-200 overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-lg font-medium text-gray-700">Loading...</div>
@@ -171,13 +171,13 @@ const DashboardTable = () => {
         ) : filteredAdmissions.length === 0 ? (
           <div className="text-center text-gray-600 py-12">No admissions found.</div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto mb-6">
             <table className="w-full divide-y divide-gray-300">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Admission ID</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider ">Date</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Applicant Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider ">Applicant Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Submitted Date</th>
                   <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                 </tr>
@@ -191,14 +191,14 @@ const DashboardTable = () => {
                     >
                       {admission.admission_number}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
-                      {formatLastLogin(admission.submit_date)}
-                    </td>
                     <td 
                       onClick={() => handleEditAdmission(admission)}
                       className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 cursor-pointer hover:text-indigo-600"
                     >
                       {`${admission.first_name} ${admission.last_name}`}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">
+                      {formatLastLogin(admission.submit_date)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${

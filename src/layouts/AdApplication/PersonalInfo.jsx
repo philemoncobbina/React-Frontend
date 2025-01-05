@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import countriesData from '../../data/countries.json';// Import the countries JSON file
 
 const PersonalInfo = ({ formData, setFormData, nextStep }) => {
     const [error, setError] = useState('');
-    const [countries, setCountries] = useState([]);
+    const [countries, setCountries] = useState(countriesData.countries); // Set the countries from the imported JSON
     const [invalidFields, setInvalidFields] = useState({}); // Track invalid fields
 
     useEffect(() => {
-        // Fetch country names from REST API
-        axios.get('https://restcountries.com/v3.1/alpha/170')
-            .then(response => {
-                const countryNames = response.data.map(country => country.name.common);
-                setCountries(countryNames.sort());
-            })
-            .catch(error => {
-                console.error("Error fetching countries:", error);
-            });
+        // You no longer need to fetch countries from an API, as you have them in the JSON file
+        setCountries(countriesData.countries.sort()); // Sort the countries alphabetically
     }, []);
 
     const handleChange = (e) => {
@@ -45,35 +39,33 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
     };
 
     const handleNext = () => {
-    const requiredFields = ['first_name', 'last_name', 'home_address', 'age', 'language_spoken', 'country_of_citizenship', 'gender', 'date_of_birth'];
-    const missingFields = {};
+        const requiredFields = ['first_name', 'last_name', 'home_address', 'age', 'language_spoken', 'country_of_citizenship', 'gender', 'date_of_birth'];
+        const missingFields = {};
 
-    requiredFields.forEach(field => {
-        if (!formData[field]) {
-            missingFields[field] = true;
+        requiredFields.forEach(field => {
+            if (!formData[field]) {
+                missingFields[field] = true;
+            }
+        });
+
+        if (!formData.middle_name) {
+            setFormData(prevFormData => ({ ...prevFormData, middle_name: "N/A" }));
         }
-    });
 
-    if (!formData.middle_name) {
-        setFormData(prevFormData => ({ ...prevFormData, middle_name: "N/A" }));
-    }
-
-    if (Object.keys(missingFields).length > 0) {
-        setInvalidFields(missingFields);
-        alert("Please fill out all required fields before proceeding.");
-    } else {
-        setInvalidFields({});
-        nextStep();
-    }
-};
-
+        if (Object.keys(missingFields).length > 0) {
+            setInvalidFields(missingFields);
+            alert("Please fill out all required fields before proceeding.");
+        } else {
+            setInvalidFields({});
+            nextStep();
+        }
+    };
 
     return (
         <div className="max-w-lg mx-auto p-8 bg-white shadow-lg border-2 border-gray-200 rounded-lg">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Personal Information</h2>
             <form>
                 <div className="grid grid-cols-1 gap-6">
-                    
                     <div>
                         <label htmlFor="first_name" className="block text-gray-700 font-medium mb-2">
                             First Name <span className="text-red-500">*</span>
