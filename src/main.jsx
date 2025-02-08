@@ -1,7 +1,9 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import './index.css';
+
 import HomePage from './Pages/HomePage';
 import AboutPage from './Pages/AboutPage';
 import LoginPage from './Pages/LoginPage';
@@ -15,13 +17,12 @@ import BlogPostPage from './Pages/BlogPostPage';
 import ContactPage from './Pages/ContactPage';
 import ReservationPage from './Pages/ReservationPage';
 import Application from './Pages/Application';
-
+import CareerPage from './Pages/CareerPage';
 import DashboardPage from './Pages/DashboardPage';
 import EditAdmission from './layouts/AdmissionReview/EditAdmission';
 import RaiseTicketPage from './Pages/RaiseTicketPage';
-import { RequireAuth, AuthProvider, AuthModalWrapper } from './Services/RequireAuth'; 
-
-
+import JobDetailspage from './Pages/JobDetailspage';
+import { RequireAuth, AuthProvider, AuthModalWrapper } from './Services/RequireAuth';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,14 @@ const router = createBrowserRouter([
   {
     path: '/about',
     element: <AboutPage />,
+  },
+  {
+    path: '/careers',
+    element: <CareerPage />,
+  },
+  {
+    path: '/vacancy/:jobId/:jobSlug',
+    element: <JobDetailspage />,
   },
   {
     path: '/contact/raiseticket',
@@ -60,7 +69,6 @@ const router = createBrowserRouter([
     path: '/admission',
     element: <AdmissionPage />,
   },
-  
   {
     path: '/blog',
     element: <BlogPage />,
@@ -93,7 +101,6 @@ const router = createBrowserRouter([
       </RequireAuth>
     ),
   },
-
   {
     path: '/contact',
     element: <ContactPage />,
@@ -102,15 +109,15 @@ const router = createBrowserRouter([
     path: '/contact/reservation',
     element: <ReservationPage />,
   },
-    // Protected route
-  
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider> {/* Wrap the app with AuthProvider */}
-      <RouterProvider router={router} />
-      <AuthModalWrapper /> {/* Render the AuthModalWrapper at the root level */}
-    </AuthProvider>
+    <HelmetProvider> {/* Wrap the app with HelmetProvider */}
+      <AuthProvider> {/* Wrap the app with AuthProvider */}
+        <RouterProvider router={router} />
+        <AuthModalWrapper /> {/* Render the AuthModalWrapper at the root level */}
+      </AuthProvider>
+    </HelmetProvider>
   </React.StrictMode>
 );

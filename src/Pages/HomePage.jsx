@@ -8,6 +8,8 @@ import ContactSection from '@/layouts/Home/ContactSection';
 import Testimonials from '@/layouts/Home/Testimonials';
 import Navbar from '@/Templates/Navbar';
 import Preschool from '@/layouts/Home/Preschool';
+import CareerTools from '../layouts/Career/CareerTools';
+
 import Footer from '@/Templates/Footer';
 
 
@@ -17,7 +19,7 @@ const HomePage = () => {
       <Navbar />
       <HomeHero />
       <StatsSection />
-      
+      <CareerTools />
       <CallToAction />
       <BlogSection />
       <AboutSection />
