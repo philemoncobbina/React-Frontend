@@ -15,6 +15,22 @@ const JobDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Function to generate a slug from the job title
+  const generateSlug = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-'); // Remove consecutive hyphens
+  };
+
+  // Function to handle job application click
+  const handleJobClick = (job) => {
+    const slug = generateSlug(job.title);
+    navigate(`/vacancy/${job.id}/${slug}/apply`); // Navigate to the job application page
+  };
+
+  // Fetch job details on component mount
   useEffect(() => {
     if (!jobId || isNaN(jobId)) {
       setError('Invalid job ID');
@@ -36,10 +52,11 @@ const JobDetails = () => {
     loadJobDetails();
   }, [jobId]);
 
+  // Function to handle sharing on social media platforms
   const handleShare = (platform) => {
     const url = window.location.href;
     const title = job?.title;
-    
+
     const shareUrls = {
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
       twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
@@ -50,20 +67,26 @@ const JobDetails = () => {
     window.open(shareUrls[platform], '_blank', 'width=600,height=400');
   };
 
+  // Loading state
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
-    </div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+      </div>
+    );
   }
 
+  // Error state
   if (error) {
     return <div className="text-center py-8 text-red-500">{error}</div>;
   }
 
+  // Job not found state
   if (!job) {
     return <div className="text-center py-8">Job not found.</div>;
   }
 
+  // Share options for the popover
   const shareOptions = [
     { platform: 'linkedin', label: 'LinkedIn' },
     { platform: 'twitter', label: 'Twitter' },
@@ -77,7 +100,7 @@ const JobDetails = () => {
         {/* Left Column - 75% */}
         <div className="md:w-3/5">
           <h1 className="text-4xl font-bold text-gray-800 mb-4">{job.title}</h1>
-          
+
           <div className="flex items-center gap-6 mb-6">
             <div className="flex items-center gap-2 text-gray-600">
               <MapPin className="w-5 h-5" />
@@ -90,7 +113,7 @@ const JobDetails = () => {
           </div>
 
           <button
-            onClick={() => navigate(`/apply/${jobId}`)}
+            onClick={() => handleJobClick(job)}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300 flex items-center gap-2 mb-8"
           >
             Apply Now
@@ -141,24 +164,22 @@ const JobDetails = () => {
             </div>
 
             <div style={{ marginTop: '9rem' }} className="space-y-6">
-              <div className="border shadow-lg rounded-lg p-4">
+              <div className="border  rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Additional Info</h3>
                 <div className="text-gray-600">
-                  <p className="mb-1">Reference Number:</p>
-                  <p className="font-medium">{job.reference_number}</p>
+                  <p className="mb-1">Ref.{job.reference_number}</p>
+                  
                 </div>
               </div>
 
-              <div className="border shadow-lg rounded-lg p-4">
+              <div className="border  rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">About the School</h3>
-                <div className="flex items-start gap-2 text-gray-600 mb-2">
-                  <Building className="w-5 h-5 mt-1" />
-                  <span>{job.school_name || "School Name"}</span>
+                <div className=" items-start gap-2 text-gray-600 mb-2">
+                  <p>
+                  A.P. Moller - Maersk is an integrated container logistics company working to connect and simplify its customer's supply chains. As the global leader in shipping services, the company operates in 130 countries and employs roughly 70,000 people. With simple end-to-end offering of products and digital services, seamless customer engagement and a superior end-to-end delivery network, Maersk enables its customers to trade and grow by transporting goods anywhere - all over the world.
+                  </p>
                 </div>
-                <div className="flex items-start gap-2 text-gray-600">
-                  <History className="w-5 h-5 mt-1" />
-                  <p className="text-sm">{job.school_history || "School history and additional information would go here."}</p>
-                </div>
+                
               </div>
             </div>
           </div>

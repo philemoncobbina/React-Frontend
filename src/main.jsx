@@ -22,6 +22,8 @@ import DashboardPage from './Pages/DashboardPage';
 import EditAdmission from './layouts/AdmissionReview/EditAdmission';
 import RaiseTicketPage from './Pages/RaiseTicketPage';
 import JobDetailspage from './Pages/JobDetailspage';
+import JobApplicationpage from './Pages/JobApplicationpage';
+
 import { RequireAuth, AuthProvider, AuthModalWrapper } from './Services/RequireAuth';
 
 const router = createBrowserRouter([
@@ -40,6 +42,10 @@ const router = createBrowserRouter([
   {
     path: '/vacancy/:jobId/:jobSlug',
     element: <JobDetailspage />,
+  },
+  {
+    path: '/vacancy/:jobId/:jobSlug/apply',
+    element: <JobApplicationpage />,
   },
   {
     path: '/contact/raiseticket',
