@@ -35,6 +35,22 @@ const ApplyToJob = () => {
     }
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        resume: file,
+      }));
+      setFileName(file.name); // Set the file name
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.resume) {
@@ -154,7 +170,11 @@ const ApplyToJob = () => {
             >
               Upload Your Resume
             </label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md">
+            <div
+              className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md"
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+            >
               <div className="space-y-1 text-center">
                 <svg
                   className="mx-auto h-12 w-12 text-gray-400"
@@ -182,7 +202,6 @@ const ApplyToJob = () => {
                       type="file"
                       onChange={handleFileChange}
                       className="sr-only"
-                      required
                     />
                   </label>
                   <p className="pl-1">or drag and drop</p>

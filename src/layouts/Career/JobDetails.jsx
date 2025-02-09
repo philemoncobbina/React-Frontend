@@ -163,8 +163,8 @@ const JobDetails = () => {
               </Popover>
             </div>
 
-            <div style={{ marginTop: '9rem' }} className="space-y-6">
-              <div className="border  rounded-lg p-4">
+            <div style={{ marginTop: '9rem' }} className="space-y-6 ">
+              <div className="border border-gray-300  rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Additional Info</h3>
                 <div className="text-gray-600">
                   <p className="mb-1">Ref.{job.reference_number}</p>
@@ -172,7 +172,7 @@ const JobDetails = () => {
                 </div>
               </div>
 
-              <div className="border  rounded-lg p-4">
+              <div className="border border-gray-300   rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">About the School</h3>
                 <div className=" items-start gap-2 text-gray-600 mb-2">
                   <p>
