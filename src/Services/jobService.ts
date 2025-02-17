@@ -58,7 +58,7 @@ export const applyToJob = async (jobId: number, formData: ApplicationFormData): 
   Object.entries(formData).forEach(([key, value]) => data.append(key, value));
 
   const { data: responseData } = await axios.post<JobApplication>(
-    `${API_BASE_URL}apply/`,
+    `http://127.0.0.1:8000/api/apply/`,
     data,
     { headers: { 'Content-Type': 'multipart/form-data' } }
   );
