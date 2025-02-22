@@ -52,15 +52,52 @@ export const fetchJobDetails = async (jobId: number): Promise<JobPost> => {
   return data;
 };
 
-export const applyToJob = async (jobId: number, formData: ApplicationFormData): Promise<JobApplication> => {
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  application?: JobApplication;
+  error?: string;
+  error_code?: string;
+  errors?: string[];
+}
+
+export const applyToJob = async (jobId: number, formData: ApplicationFormData): Promise<ApiResponse> => {
   const data = new FormData();
   data.append('job_post', jobId.toString());
   Object.entries(formData).forEach(([key, value]) => data.append(key, value));
 
-  const { data: responseData } = await axios.post<JobApplication>(
-    `http://127.0.0.1:8000/api/apply/`,
-    data,
-    { headers: { 'Content-Type': 'multipart/form-data' } }
-  );
-  return responseData;
+  try {
+    const { data: responseData } = await axios.post<ApiResponse>(
+      `http://127.0.0.1:8000/api/job-applications/apply/`,
+      data,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+
+    // Handle successful response
+    if (responseData.success) {
+      console.log('Success:', {
+        message: responseData.message,
+        application: responseData.application
+      });
+    }
+
+    return responseData;
+
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      const errorData = error.response.data as ApiResponse;
+       {
+        console.error('API Error:', {
+          message: errorData.message,
+          error: errorData.error
+        });
+      }     
+      throw errorData;
+    }
+    
+    // Handle unexpected errors
+    console.error('Unexpected Error:', error);
+    throw error;
+  }
 };
+

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { applyToJob } from '../../Services/jobService';
+import { applyToJob, fetchJobDetails } from '../../Services/jobService';
 
 const ApplyToJob = () => {
   const { jobId } = useParams(); // Get jobId from URL params
@@ -15,6 +15,24 @@ const ApplyToJob = () => {
   const [error, setError] = useState(null); // Error state
   const [fileName, setFileName] = useState(''); // State to store the file name
   const navigate = useNavigate(); // Navigation hook
+  const [job, setJob] = useState(null); // State to store job details
+  const [jobLoading, setJobLoading] = useState(true); // Job loading state
+
+  // Fetch job details on component mount
+  useEffect(() => {
+    const loadJobDetails = async () => {
+      try {
+        const data = await fetchJobDetails(Number(jobId));
+        setJob(data);
+      } catch (err) {
+        setError('Failed to load job details. Please try again later.');
+      } finally {
+        setJobLoading(false);
+      }
+    };
+
+    loadJobDetails();
+  }, [jobId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,26 +75,59 @@ const ApplyToJob = () => {
       setError('Please upload a resume.');
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
-      await applyToJob(Number(jobId), formData); // Call the applyToJob function with form data
-      navigate('/my-applications'); // Redirect to the applications page
+      await applyToJob(Number(jobId), formData);
+      navigate('/careers'); // Redirect to the careers page upon success
     } catch (err) {
-      setError('Failed to submit application. Please try again.');
+      if (err && err.message) {
+        setError(err.message); // Use the error message from the response
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
   };
+  
+  // Show loading spinner while fetching job details
+  if (jobLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-8">
+        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-2">
           Apply to Job
         </h2>
+        
+        {/* Job information section */}
+        {job && (
+          <div className="bg-white shadow-md rounded-lg p-6 mb-8">
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">{job.title}</h3>
+            <div className="flex flex-wrap gap-x-6 text-gray-600">
+              {job.reference_number && (
+                <p className="mb-1">
+                  <span className="font-medium">Reference:</span> {job.reference_number}
+                </p>
+              )}
+              {job.location && (
+                <p className="mb-1">
+                  <span className="font-medium">Location:</span> {job.location}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-lg rounded-lg p-8 space-y-6"
