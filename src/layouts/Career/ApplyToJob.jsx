@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { applyToJob, fetchJobDetails } from '../../Services/jobService';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Upload, CheckCircle2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ApplyToJob = () => {
-  const { jobId } = useParams(); // Get jobId from URL params
+  const { jobId } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
     email: '',
-    educational_level: 'HIGH_SCHOOL', // Default value
+    educational_level: 'HIGH_SCHOOL',
     resume: null,
   });
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(null); // Error state
-  const [fileName, setFileName] = useState(''); // State to store the file name
-  const navigate = useNavigate(); // Navigation hook
-  const [job, setJob] = useState(null); // State to store job details
-  const [jobLoading, setJobLoading] = useState(true); // Job loading state
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [fileError, setFileError] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const [fileSize, setFileSize] = useState('');
+  const [job, setJob] = useState(null);
+  const [jobLoading, setJobLoading] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // Fetch job details on component mount
   useEffect(() => {
     const loadJobDetails = async () => {
       try {
@@ -42,33 +53,75 @@ const ApplyToJob = () => {
     }));
   };
 
+  const handleSelectChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      educational_level: value,
+    }));
+  };
+
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setFileError(null);
+    
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        resume: file,
-      }));
-      setFileName(file.name); // Set the file name
+      if (!file.type.includes('pdf')) {
+        setFileError('Please upload only PDF files');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        setFileError('File size must be less than 10MB');
+        return;
+      }
+
+      setFormData((prev) => ({ ...prev, resume: file }));
+      setFileName(file.name);
+      setFileSize(formatFileSize(file.size));
     }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
+    
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        resume: file,
-      }));
-      setFileName(file.name); // Set the file name
+      if (!file.type.includes('pdf')) {
+        setFileError('Please upload only PDF files');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        setFileError('File size must be less than 10MB');
+        return;
+      }
+
+      setFormData((prev) => ({ ...prev, resume: file }));
+      setFileName(file.name);
+      setFileSize(formatFileSize(file.size));
     }
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
+  const clearForm = () => {
+    setFormData({
+      first_name: '',
+      last_name: '',
+      email: '',
+      educational_level: 'HIGH_SCHOOL',
+      resume: null,
+    });
+    setFileName('');
+    setFileSize('');
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.resume) {
@@ -81,19 +134,15 @@ const ApplyToJob = () => {
   
     try {
       await applyToJob(Number(jobId), formData);
-      navigate('/careers'); // Redirect to the careers page upon success
+      clearForm(); // Clear form fields before showing modal
+      setShowSuccessModal(true);
     } catch (err) {
-      if (err && err.message) {
-        setError(err.message); // Use the error message from the response
-      } else {
-        setError('An unexpected error occurred. Please try again.');
-      }
+      setError(err?.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
   
-  // Show loading spinner while fetching job details
   if (jobLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -103,214 +152,178 @@ const ApplyToJob = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="text-3xl font-extrabold text-gray-900 text-center mb-2">
-          Apply to Job
-        </h2>
-        
-        {/* Job information section */}
-        {job && (
-          <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">{job.title}</h3>
-            <div className="flex flex-wrap gap-x-6 text-gray-600">
-              {job.reference_number && (
-                <p className="mb-1">
-                  <span className="font-medium">Reference:</span> {job.reference_number}
-                </p>
-              )}
-              {job.location && (
-                <p className="mb-1">
-                  <span className="font-medium">Location:</span> {job.location}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white shadow-lg rounded-lg p-8 space-y-6"
-        >
-          {/* First Name Field */}
-          <div>
-            <label
-              htmlFor="first_name"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              First Name
-            </label>
-            <input
-              id="first_name"
-              name="first_name"
-              type="text"
-              value={formData.first_name}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          {/* Last Name Field */}
-          <div>
-            <label
-              htmlFor="last_name"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Last Name
-            </label>
-            <input
-              id="last_name"
-              name="last_name"
-              type="text"
-              value={formData.last_name}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          {/* Email Field */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-
-          {/* Educational Level Field */}
-          <div>
-            <label
-              htmlFor="educational_level"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Educational Level
-            </label>
-            <select
-              id="educational_level"
-              name="educational_level"
-              value={formData.educational_level}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="HIGH_SCHOOL">High School</option>
-              <option value="ASSOCIATE">Associate Degree</option>
-              <option value="BACHELOR">Bachelor's Degree</option>
-              <option value="MASTER">Master's Degree</option>
-              <option value="PHD">PhD</option>
-            </select>
-          </div>
-
-          {/* Resume Upload Field */}
-          <div>
-            <label
-              htmlFor="resume"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Upload Your Resume
-            </label>
-            <div
-              className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md"
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-            >
-              <div className="space-y-1 text-center">
-                <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
-                  stroke="currentColor"
-                  fill="none"
-                  viewBox="0 0 48 48"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <div className="flex text-sm text-gray-600">
-                  <label
-                    htmlFor="resume"
-                    className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
-                  >
-                    <span>Upload a file</span>
-                    <input
-                      id="resume"
-                      name="resume"
-                      type="file"
-                      onChange={handleFileChange}
-                      className="sr-only"
-                    />
-                  </label>
-                  <p className="pl-1">or drag and drop</p>
+    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto space-y-6">
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold text-center">Apply to Job</CardTitle>
+            {job && (
+              <CardDescription className="text-center">
+                <span className="text-lg font-semibold text-slate-800">{job.title}</span>
+                <div className="flex justify-center gap-x-6 mt-2 text-sm text-slate-600">
+                  {job.reference_number && <span>Ref: {job.reference_number}</span>}
+                  {job.location && <span>Location: {job.location}</span>}
                 </div>
-                <p className="text-xs text-gray-500">
-                  PDF, DOC, DOCX up to 10MB
-                </p>
-                {fileName && (
-                  <p className="text-sm text-gray-900 mt-2">
-                    Selected file: {fileName}
-                  </p>
+              </CardDescription>
+            )}
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="first_name">First Name</Label>
+                  <Input
+                    id="first_name"
+                    name="first_name"
+                    value={formData.first_name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="last_name">Last Name</Label>
+                  <Input
+                    id="last_name"
+                    name="last_name"
+                    value={formData.last_name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="educational_level">Educational Level</Label>
+                <Select
+                  value={formData.educational_level}
+                  onValueChange={handleSelectChange}
+                >
+                  <SelectTrigger className=" bg-white text-black">
+                    <SelectValue placeholder="Select education level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="HIGH_SCHOOL">High School</SelectItem>
+                    <SelectItem value="ASSOCIATE">Associate Degree</SelectItem>
+                    <SelectItem value="BACHELOR">Bachelor's Degree</SelectItem>
+                    <SelectItem value="MASTER">Master's Degree</SelectItem>
+                    <SelectItem value="PHD">PhD</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Resume</Label>
+                <div
+                  className={`border-2 border-dashed rounded-lg p-6 transition-colors duration-200 ease-in-out ${
+                    fileError ? 'border-red-400 bg-red-50' : 'border-slate-200 hover:border-slate-300'
+                  }`}
+                  onDrop={handleDrop}
+                  onDragOver={(e) => e.preventDefault()}
+                >
+                  <div className="flex flex-col items-center justify-center space-y-4">
+                    <Upload className="h-12 w-12 text-slate-400" />
+                    <div className="text-center">
+                      <Label
+                        htmlFor="resume"
+                        className="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+                      >
+                        Upload a file
+                        <input
+                          id="resume"
+                          name="resume"
+                          type="file"
+                          accept=".pdf"
+                          onChange={handleFileChange}
+                          className="sr-only"
+                        />
+                      </Label>
+                      <p className="text-sm text-slate-500">or drag and drop</p>
+                      <p className="text-xs text-slate-500 mt-1">PDF only, up to 10MB</p>
+                    </div>
+                  </div>
+                </div>
+
+                {fileName && !fileError && (
+                  <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <div className="flex-1 truncate">
+                        <p className="text-sm font-medium text-slate-900">{fileName}</p>
+                        <p className="text-xs text-slate-500">{fileSize}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {fileError && (
+                  <Alert variant="destructive" className="mt-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>{fileError}</AlertDescription>
+                  </Alert>
                 )}
               </div>
-            </div>
-          </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="text-red-500 text-sm text-center mt-4">{error}</div>
-          )}
-
-          {/* Submit Button */}
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
-            >
-              {loading ? (
-                <>
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Submitting...
-                </>
-              ) : (
-                'Submit Application'
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
               )}
-            </button>
-          </div>
-        </form>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent" />
+                    Submitting...
+                  </>
+                ) : (
+                  'Submit Application'
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+          <DialogContent className="border border-black bg-white text-black">
+            <DialogHeader>
+              <DialogTitle>Application Submitted Successfully!</DialogTitle>
+              <DialogDescription>
+                Thank you for your application. We will review it and get back to you soon.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex-col sm:flex-row gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowSuccessModal(false)}
+              >
+                Close
+              </Button>
+              <Button
+                onClick={() => navigate('/careers')}
+              >
+                View All Jobs
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
