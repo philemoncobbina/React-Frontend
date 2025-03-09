@@ -46,9 +46,9 @@ const TeamPost = () => {
               <div className="mb-7 mt-7 flex justify-center">
                 <a
                   className="bg-brand-secondary/20 rounded-full px-5 py-2 text-sm text-blue-600 dark:text-blue-500"
-                  href="/blog"
+                  href="/about"
                 >
-                  ← View all posts
+                  ← Go Back
                 </a>
               </div>
             </div>

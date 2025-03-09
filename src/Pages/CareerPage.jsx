@@ -3,7 +3,8 @@ import Navbar from '@/Templates/Navbar';
 import CareerTools from '@/layouts/Career/CareerTools'
 import WorkforceSection from '@/layouts/Career/WorkforceSection';
 import CoreValuesSection from '@/layouts/Career/CoreValuesSection';
-import JobOpeningsSection from '@/layouts/Career/JobOpeningsSection';
+import WhyWorkWithUs from '@/layouts/Career/WhyWorkWithUs';
+import Footer from '@/Templates/Footer';
 
 const CareerPage = () => {
     return (
@@ -12,7 +13,8 @@ const CareerPage = () => {
           <CareerTools />
           <CoreValuesSection />
           <WorkforceSection />
-          <JobOpeningsSection />
+          <WhyWorkWithUs />
+          <Footer />
         </>
       )
 }

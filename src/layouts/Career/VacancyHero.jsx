@@ -1,6 +1,7 @@
 import React from 'react';
 
-const AboutHero = () => {
+
+const VacancyHero = () => {
   const scrollToHistory = () => {
     const historySection = document.getElementById('about-history-section');
     if (historySection) {
@@ -19,12 +20,14 @@ const AboutHero = () => {
     <div className="mt-24 mb-0">
       {/* Optional Breadcrumb Navigation */}
       <div className="w-full py-3">
-        <div className="container mx-auto px-6">
-          <div className="text-sm text-gray-600">
-            <a href="/" className="hover:text-blue-800">Home</a> &gt; <span className="text-gray-800">About Us</span>
-          </div>
-        </div>
-      </div>
+  <div className="container mx-auto px-6">
+    <div className="text-sm text-gray-600">
+      <a href="/" className="hover:text-blue-800">Home</a> &gt; 
+      <a href="/careers" className="hover:text-blue-800">Career</a> &gt; 
+      <span className="text-gray-600">Vacancy</span>
+    </div>
+  </div>
+</div>
       
       {/* Hero Section with Background Image */}
       <div 
@@ -39,32 +42,17 @@ const AboutHero = () => {
       >
         <div className="container mx-auto px-6 flex flex-col justify-center h-full">
           <h1 className="text-4xl font-serif font-bold text-white mb-4 leading-tight">
-            About Our School
+          Join Our Team!
           </h1>
           <p className="text-white text-lg max-w-2xl mb-6 leading-relaxed">
-            Learn about our rich history, academic excellence, and the dedicated educators 
-            who make our school community exceptional.
+          Passionate about education? We're seeking dedicated individuals to inspire young minds and make a difference. Explore career opportunities with us today!
           </p>
           
-          {/* Responsive Buttons with Hover Effect */}
-          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0">
-            <button 
-              onClick={scrollToHistory}
-              className="bg-white px-6 py-3 rounded shadow text-gray-700 font-medium hover:bg-gray-100 hover:scale-105 transition duration-300"
-            >
-              Our History
-            </button>
-            <button 
-              onClick={scrollToTeam}
-              className="border border-white px-6 py-3 rounded text-white font-medium hover:scale-105 transition duration-300"
-            >
-              Meet Our Team 
-            </button>
-          </div>
+          
         </div>
       </div>
     </div>
   );
 };
 
-export default AboutHero;
+export default VacancyHero;

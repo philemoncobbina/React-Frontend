@@ -2,7 +2,7 @@ import React from 'react';
 
 const AboutHistory = () => {
   return (
-    <section className="relative py-16 sm:py-24 lg:py-32 bg-gray-50 overflow-hidden">
+    <section id="about-history-section" className="relative py-8 sm:py-12 lg:py-16 bg-gray-50 overflow-hidden">
       <div className="relative container px-4 mx-auto">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
@@ -26,7 +26,7 @@ const AboutHistory = () => {
             </div>
           </div>
           {/* Optional Image or Decorative Element */}
-          
+                   
         </div>
       </div>
     </section>

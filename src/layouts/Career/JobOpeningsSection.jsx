@@ -1,11 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchPublishedJobs } from '../../Services/jobService';
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious 
+} from '@/components/ui/pagination';
 
 const JobOpeningsSection = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const jobsPerPage = 12;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,6 +28,7 @@ const JobOpeningsSection = () => {
         const sortedJobs = data.sort((a, b) => new Date(b.published_date) - new Date(a.published_date));
         
         setJobs(sortedJobs);
+        setTotalJobs(sortedJobs.length);
       } catch (err) {
         setError('Failed to load job openings. Please try again later.');
       } finally {
@@ -37,7 +49,7 @@ const JobOpeningsSection = () => {
 
   const handleJobClick = (job) => {
     const slug = generateSlug(job.title);
-    navigate(`/vacancy/${job.id}/${slug}`); // URL: /vacancy/14/software-developer
+    navigate(`/careers/vacancy/${job.id}/${slug}`); // URL: /vacancy/14/software-developer
   };
 
   const isNewJob = (publishedDate) => {
@@ -47,6 +59,17 @@ const JobOpeningsSection = () => {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays <= 3;
   };
+
+  // Get current jobs for pagination
+  const indexOfLastJob = currentPage * jobsPerPage;
+  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
+  const totalPages = Math.ceil(jobs.length / jobsPerPage);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const goToNextPage = () => setCurrentPage(prev => Math.min(prev + 1, totalPages));
+  const goToPrevPage = () => setCurrentPage(prev => Math.max(prev - 1, 1));
 
   if (loading) {
     return (
@@ -74,14 +97,23 @@ const JobOpeningsSection = () => {
     return <div className="text-center py-8 text-red-500">{error}</div>;
   }
 
+  const startCount = indexOfFirstJob + 1;
+  const endCount = Math.min(indexOfLastJob, totalJobs);
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16">
+    <div id="vacancies-section" className="max-w-7xl mx-auto px-4 py-16">
       <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
         Current Job Openings
       </h2>
+      
+      {jobs.length > 0 && (
+        <div className="text-gray-600 mb-6 text-center">
+          Showing {startCount}-{endCount} of {totalJobs} Job opportunities for you
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {jobs.map((job) => (
+        {currentJobs.map((job) => (
           <div
             key={job.id}
             className="bg-white rounded-xl hover:shadow-xl transition-shadow duration-100 p-5 border border-gray-200 cursor-pointer relative"
@@ -108,6 +140,81 @@ const JobOpeningsSection = () => {
       {jobs.length === 0 && (
         <div className="text-center text-gray-600 py-8">
           No job openings available at the moment.
+        </div>
+      )}
+      
+      {jobs.length > 0 && (
+        <div className="mt-12">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={goToPrevPage} 
+                  className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                />
+              </PaginationItem>
+              
+              {/* First page */}
+              {currentPage > 2 && (
+                <PaginationItem>
+                  <PaginationLink onClick={() => paginate(1)}>1</PaginationLink>
+                </PaginationItem>
+              )}
+              
+              {/* Ellipsis if needed */}
+              {currentPage > 3 && (
+                <PaginationItem>
+                  <PaginationLink className="cursor-default">...</PaginationLink>
+                </PaginationItem>
+              )}
+              
+              {/* Previous page if not on first page */}
+              {currentPage > 1 && (
+                <PaginationItem>
+                  <PaginationLink onClick={() => paginate(currentPage - 1)}>
+                    {currentPage - 1}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              
+              {/* Current page */}
+              <PaginationItem>
+                <PaginationLink isActive>{currentPage}</PaginationLink>
+              </PaginationItem>
+              
+              {/* Next page if not on last page */}
+              {currentPage < totalPages && (
+                <PaginationItem>
+                  <PaginationLink onClick={() => paginate(currentPage + 1)}>
+                    {currentPage + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              
+              {/* Ellipsis if needed */}
+              {currentPage < totalPages - 2 && (
+                <PaginationItem>
+                  <PaginationLink className="cursor-default">...</PaginationLink>
+                </PaginationItem>
+              )}
+              
+              {/* Last page */}
+              {currentPage < totalPages - 1 && (
+                <PaginationItem>
+                  <PaginationLink onClick={() => paginate(totalPages)}>
+                    {totalPages}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={goToNextPage} 
+                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       )}
     </div>

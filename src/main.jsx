@@ -23,6 +23,7 @@ import EditAdmission from './layouts/AdmissionReview/EditAdmission';
 import RaiseTicketPage from './Pages/RaiseTicketPage';
 import JobDetailspage from './Pages/JobDetailspage';
 import JobApplicationpage from './Pages/JobApplicationpage';
+import JobVacancyPage from './Pages/JobVacancyPage';
 
 import { RequireAuth, AuthProvider, AuthModalWrapper } from './Services/RequireAuth';
 
@@ -40,11 +41,15 @@ const router = createBrowserRouter([
     element: <CareerPage />,
   },
   {
-    path: '/vacancy/:jobId/:jobSlug',
+    path: '/careers/vacancy',
+    element: <JobVacancyPage />,
+  },
+  {
+    path: '/careers/vacancy/:jobId/:jobSlug',
     element: <JobDetailspage />,
   },
   {
-    path: '/vacancy/:jobId/:jobSlug/apply',
+    path: '/careers/vacancy/:jobId/:jobSlug/apply',
     element: <JobApplicationpage />,
   },
   {

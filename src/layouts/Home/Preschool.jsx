@@ -27,9 +27,11 @@ const Preschool = () => {
           </div>
           <div className="flex-1 flex flex-col justify-center text-left mt-8 md:mt-0 p-4 md:pl-9">
             <div className="mb-8">
-              <div className="inline-block bg-blue-500 text-white px-4 py-2 rounded-md">
-                Enrol Now
-              </div>
+            <a href="/admission">
+  <div className="inline-block bg-blue-500 text-white px-4 py-2 rounded-md">
+    Enrol Now
+  </div>
+</a>
             </div>
             <h2 className="text-2xl font-semibold mb-4">
               Ridoana <span className="notranslate">Preschool Section </span>

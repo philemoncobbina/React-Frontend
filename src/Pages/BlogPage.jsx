@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import Navbar from '@/Templates/Navbar';
 import Footer from '@/Templates/Footer';
 import Blogs from '@/layouts/Blog/Blogs';
+import BlogsHero from '@/layouts/Blog/BlogsHero';
 
 const BlogPage = () => {
   return (
@@ -12,6 +13,7 @@ const BlogPage = () => {
         <meta name="description" content="Stay updated with the latest news and articles on Ridoana's blog." />
       </Helmet>
       <Navbar />
+      <BlogsHero />
       <Blogs />
       <Footer />
     </div>

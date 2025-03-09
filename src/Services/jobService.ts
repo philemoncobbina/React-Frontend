@@ -68,7 +68,7 @@ export const applyToJob = async (jobId: number, formData: ApplicationFormData): 
 
   try {
     const { data: responseData } = await axios.post<ApiResponse>(
-      `http://127.0.0.1:8000/api/job-applications/apply/`,
+      `https://api.plvcmonline.uk/api/job-applications/apply/`,
       data,
       { headers: { 'Content-Type': 'multipart/form-data' } }
     );

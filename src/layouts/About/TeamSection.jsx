@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const TeamSection = () => {
   return (
-    <section className="relative py-20 md:py-24 overflow-hidden">
+    <section id="about-team-section" className="relative py-20 md:py-24 overflow-hidden">
       
       <div className="relative container px-4 mx-auto">
         <div className="max-w-2xl lg:max-w-3xl mx-auto xl:max-w-7xl">

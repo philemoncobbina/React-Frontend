@@ -43,7 +43,7 @@ const WorkforceSection = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-16">
+    <div id="our-teams-section" className="max-w-7xl mx-auto px-4 py-16">
       <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
         Our Workforce Structure
       </h2>

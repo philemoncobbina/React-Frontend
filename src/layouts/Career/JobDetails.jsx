@@ -27,7 +27,7 @@ const JobDetails = () => {
   // Function to handle job application click
   const handleJobClick = (job) => {
     const slug = generateSlug(job.title);
-    navigate(`/vacancy/${job.id}/${slug}/apply`); // Navigate to the job application page
+    navigate(`/careers/vacancy/${job.id}/${slug}/apply`); // Navigate to the job application page
   };
 
   // Fetch job details on component mount

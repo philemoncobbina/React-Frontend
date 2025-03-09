@@ -86,6 +86,10 @@ const ApplyToJob = () => {
       setFormData((prev) => ({ ...prev, resume: file }));
       setFileName(file.name);
       setFileSize(formatFileSize(file.size));
+      // Clear resume-related error when valid file is uploaded
+      if (error === 'Please upload a resume.') {
+        setError(null);
+      }
     }
   };
 
@@ -107,6 +111,10 @@ const ApplyToJob = () => {
       setFormData((prev) => ({ ...prev, resume: file }));
       setFileName(file.name);
       setFileSize(formatFileSize(file.size));
+      // Clear resume-related error when valid file is uploaded
+      if (error === 'Please upload a resume.') {
+        setError(null);
+      }
     }
   };
 
