@@ -9,7 +9,7 @@ const AdmissionNote = () => {
             {/* Left Column (Heading & Description) */}
             <div className="w-full lg:w-1/2 text-center lg:text-left">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight mb-6">
-              Welcome to AIS Admissions: Your Journey Starts Here
+              Welcome to Ridoana Admissions: Your Journey Starts Here
               </h1>
               <p className="text-gray-700 leading-relaxed">
               Thank you for considering RIDOANA! We're thrilled that you're exploring our school. This Admissions section is designed to help you navigate the application process while also offering insights into what makes AIS a great place for your child.

@@ -1,14 +1,16 @@
 import React from 'react'
 import Reservation from '@/layouts/Reservation/Reservation'
-import ContactHero from '@/layouts/Contact/ContactHero'
+import ReservationHero from '@/layouts/Reservation/ReservationHero'
 import Navbar from '@/Templates/Navbar'
+import Footer from '@/Templates/Footer';
 
 const ReservationPage = () => {
   return (
     <div>
       <Navbar />
-      <ContactHero />
+      <ReservationHero />
       <Reservation />
+      <Footer />
     </div>
   )
 }

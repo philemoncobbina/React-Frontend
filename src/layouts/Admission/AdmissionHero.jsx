@@ -45,20 +45,14 @@ const AdmissionHero = () => {
            Our institution is dedicated to fostering academic excellence, personal growth, and a welcoming environment for every student. 
           </p>
           
-          {/* Responsive Buttons with Hover Effect */}
-          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0">
-          <a href="/admission/apply">
-  <button className="bg-white px-6 py-3 rounded shadow text-gray-700 font-medium hover:bg-gray-100 hover:scale-105 transition duration-300">
-    Apply Online
-  </button>
-</a>
-            <button 
-              onClick={scrollToTeam}
-              className="border border-white px-6 py-3 rounded text-white font-medium hover:scale-105 transition duration-300"
-            >
-              Meet Our Team 
-            </button>
-          </div>
+          {/* Responsive Button with Hover Effect */}
+          <div className="sm:space-x-4 space-y-3 sm:space-y-0">
+  <a href="/admission/apply" className="block sm:inline-block w-full sm:w-auto">
+    <button className="bg-white px-6 py-3 rounded shadow text-gray-700 font-medium hover:bg-gray-100 hover:scale-105 transition duration-300 w-full sm:w-auto">
+      Apply Online
+    </button>
+  </a>
+</div>
         </div>
       </div>
     </div>

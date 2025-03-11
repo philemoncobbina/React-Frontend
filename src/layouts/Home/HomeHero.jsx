@@ -3,6 +3,8 @@ import BlurFade from '@/components/magicui/blur-fade';
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react';
 import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
+
+import { Link, useNavigate } from 'react-router-dom';
 import { cn } from "@/lib/utils";
 
 const HomeHero = () => {
@@ -49,6 +51,13 @@ const HomeHero = () => {
     e.stopPropagation(); // Prevent event bubbling
     setCurrentImageIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
     setZoomLevel(1);
+  };
+
+  const navigate = useNavigate();
+
+  const handleNavigate = (event) => {
+    event.preventDefault(); // Prevent default link behavior
+    navigate('/admission'); // Navigate to the desired route
   };
 
   // Zoom in
@@ -204,12 +213,13 @@ const HomeHero = () => {
                   </div>
                 </div>
               </div>
-              <a 
-                href="/admission" 
-                className="inline-block rounded-md border border-transparent bg-black px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
-              >
-                Enrol Now
-              </a>
+              <Link
+      to="/admission" // Use `to` instead of `href`
+      onClick={handleNavigate} // Attach the click handler
+      className="inline-block rounded-md border border-transparent bg-black px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
+    >
+      Enrol Now
+    </Link>
             </div>
           </div>
         </div>

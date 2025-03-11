@@ -160,7 +160,7 @@ const ApplyToJob = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div style={{ marginTop: '4.4rem' }} className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto space-y-6">
         <Card className="border-0 shadow-lg">
           <CardHeader>
