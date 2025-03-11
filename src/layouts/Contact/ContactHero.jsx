@@ -18,7 +18,7 @@ const ContactHero = () => {
       <div 
         className="w-full py-16 overflow-hidden bg-no-repeat relative flex items-center"
         style={{
-          backgroundImage: "url('https://images.pexels.com/photos/10913894/pexels-photo-10913894.jpeg?auto=compress&cs=tinysrgb&w=600')",
+          backgroundImage: "url('https://images.pexels.com/photos/3231359/pexels-photo-3231359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           height: '400px',
