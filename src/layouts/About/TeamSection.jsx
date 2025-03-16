@@ -24,9 +24,9 @@ const TeamSection = () => {
                 </p>
                 <a
                   className="inline-flex py-4 px-6 items-center text-sm text-orange-900 font-semibold bg-white border border-gray-200 hover:border-orange-900 rounded-full transition duration-200"
-                  href="#"
+                  href="/careers/"
                 >
-                  <span className="mr-4">See More Team</span>
+                  <span className="mr-4">Join Our Team</span>
                   <span>
                     <svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path

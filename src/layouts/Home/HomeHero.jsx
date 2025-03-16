@@ -3,12 +3,11 @@ import BlurFade from '@/components/magicui/blur-fade';
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react';
 import AnimatedShinyText from "@/components/magicui/animated-shiny-text";
-
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from "@/lib/utils";
 
 const HomeHero = () => {
-  // Images array - keeping your existing images
+  // Images array
   const images = [
     { src: "https://images.pexels.com/photos/5427671/pexels-photo-5427671.jpeg?auto=compress&cs=tinysrgb&w=600", alt: "Classroom" },
     { src: "https://images.pexels.com/photos/4019754/pexels-photo-4019754.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", alt: "Students" },
@@ -23,6 +22,7 @@ const HomeHero = () => {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const navigate = useNavigate();
 
   // Open lightbox with clicked image
   const openLightbox = (index) => {
@@ -53,13 +53,6 @@ const HomeHero = () => {
     setZoomLevel(1);
   };
 
-  const navigate = useNavigate();
-
-  const handleNavigate = (event) => {
-    event.preventDefault(); // Prevent default link behavior
-    navigate('/admission'); // Navigate to the desired route
-  };
-
   // Zoom in
   const zoomIn = (e) => {
     e.stopPropagation(); // Prevent event bubbling
@@ -70,6 +63,13 @@ const HomeHero = () => {
   const zoomOut = (e) => {
     e.stopPropagation(); // Prevent event bubbling
     setZoomLevel((prevZoom) => Math.max(prevZoom - 0.25, 0.5));
+  };
+
+  // Handle direct navigation with imperative approach
+  const handleEnrollClick = (e) => {
+    e.preventDefault(); // Prevent default anchor behavior
+    navigate('/admission');
+    console.log('Navigation triggered to /admission');  // Debug log
   };
 
   // Keyboard navigation
@@ -102,7 +102,7 @@ const HomeHero = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isLightboxOpen]);
+  }, [isLightboxOpen, images.length]);
 
   // Stop propagation for image click inside lightbox
   const handleImageClick = (e) => {
@@ -213,13 +213,14 @@ const HomeHero = () => {
                   </div>
                 </div>
               </div>
-              <Link
-      to="/admission" // Use `to` instead of `href`
-      onClick={handleNavigate} // Attach the click handler
-      className="inline-block rounded-md border border-transparent bg-black px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
-    >
-      Enrol Now
-    </Link>
+              
+              {/* Fixed direct navigation button */}
+              <button
+                onClick={handleEnrollClick}
+                className="inline-block rounded-md border border-transparent bg-black px-8 py-3 text-center font-medium text-white hover:bg-indigo-700 cursor-pointer"
+              >
+                Enrol Now
+              </button>
             </div>
           </div>
         </div>

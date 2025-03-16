@@ -119,7 +119,7 @@ const ContactSection = () => {
                   <div className="px-8">
                     <h2 className="text-xl font-bold font-heading mb-6">Technical Help desk</h2>
                     <a className="w-full sm:w-auto h-12 py-3 px-5 rounded-full bg-purple-900 border border-purple-700 hover:bg-purple-800 focus:ring focus:ring-purple-800 transition duration-200 inline-flex items-center justify-center gap-2" href="/contact/raiseticket">
-                      <span className="text-white text-sm font-semibold">Visit FAQ Center</span>
+                      <span className="text-white text-sm font-semibold">Raise A Ticket</span>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                         <path d="M5 10H15.4167M15.4167 10L10.4167 5M15.4167 10L10.4167 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
                       </svg>
@@ -185,6 +185,7 @@ const ContactSection = () => {
                       onChange={handleInputChange}
                       className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       placeholder="+233 45 90737"
+                      required
                     />
                   </div>
                 </div>

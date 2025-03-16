@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { getUserDetails } from "../Services/ChangePassword";
-
 import { isLoggedIn, logout } from "../Services/Login"; // Corrected import statement
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,9 +32,7 @@ const Navbar = () => {
     fetchUser();
   }, []);
 
-  
-
-   const handleLogout = async () => {
+  const handleLogout = async () => {
     await logout(navigate);
     setUser(null);
   };
@@ -87,28 +88,29 @@ const Navbar = () => {
               Contact
             </a>
             {user ? (
-              <div className="relative w-48">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="bg-gray w-48 text-gray-800 px-3 border py-2 rounded-md text-sm font-medium flex items-center justify-between"
-      >
-        {`${user.first_name} ${user.last_name}`}
-        <FaChevronDown className="h-3 w-5 ml-2" />
-      </button>
-      {isOpen && (
-        <div className="absolute w-48 top-10 right-0 bg-white border rounded-md shadow-md">
-          <a href="/dashboard" className="block px-4 py-2 hover:bg-gray-100">
-            Profile
-          </a>
-          <a href="/changepassword" className="block px-4 py-2 hover:bg-gray-100">
-            Change Password
-          </a>
-          <button onClick={handleLogout} className="block px-4 py-2 hover:bg-gray-100">
-            Logout
-          </button>
-        </div>
-      )}
-    </div>
+              <Popover>
+                <PopoverTrigger className="bg-gray w-48 text-gray-800 px-3 border py-2 rounded-md text-sm font-medium flex items-center justify-between">
+                  {`${user.first_name} ${user.last_name}`}
+                  <FaChevronDown className="h-3 w-5 ml-2" />
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-0">
+                  <div className="py-1">
+                    <a href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                      Profile
+                    </a>
+                    <a href="/changepassword" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
+                      Change Password
+                    </a>
+                    <div className="border-t border-gray-200"></div>
+                    <button 
+                      onClick={handleLogout} 
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </PopoverContent>
+              </Popover>
             ) : (
               <>
                 <a
