@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Upload, CheckCircle2, AlertCircle } from "lucide-react";
+import { Upload, CheckCircle2, AlertCircle, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const ApplyToJob = () => {
@@ -28,36 +28,69 @@ const ApplyToJob = () => {
   const [fileSize, setFileSize] = useState('');
   const [job, setJob] = useState(null);
   const [jobLoading, setJobLoading] = useState(true);
+  const [jobLoadError, setJobLoadError] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
+  // Load job details on component mount
   useEffect(() => {
-    const loadJobDetails = async () => {
+    const loadJob = async () => {
       try {
-        const data = await fetchJobDetails(Number(jobId));
-        setJob(data);
+        const jobData = await fetchJobDetails(Number(jobId));
+        setJob(jobData);
+        if (!jobData) {
+          setJobLoadError(true);
+        }
       } catch (err) {
+        setJobLoadError(true);
         setError('Failed to load job details. Please try again later.');
       } finally {
         setJobLoading(false);
       }
     };
-
-    loadJobDetails();
+    loadJob();
   }, [jobId]);
 
+  // Form field change handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSelectChange = (value) => {
-    setFormData((prev) => ({
-      ...prev,
-      educational_level: value,
-    }));
+    setFormData(prev => ({ ...prev, educational_level: value }));
+  };
+
+  // File handling functions
+  const validateFile = (file) => {
+    if (!file) return false;
+    if (!file.type.includes('pdf')) {
+      setFileError('Please upload only PDF files');
+      return false;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setFileError('File size must be less than 10MB');
+      return false;
+    }
+    return true;
+  };
+
+  const processFile = (file) => {
+    if (!validateFile(file)) return;
+    
+    setFileError(null);
+    setFormData(prev => ({ ...prev, resume: file }));
+    setFileName(file.name);
+    setFileSize(formatFileSize(file.size));
+    
+    // Clear resume-related error
+    if (error === 'Please upload a resume.') setError(null);
+  };
+
+  const handleFileChange = (e) => processFile(e.target.files[0]);
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    processFile(e.dataTransfer.files[0]);
   };
 
   const formatFileSize = (bytes) => {
@@ -68,56 +101,7 @@ const ApplyToJob = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFileError(null);
-    
-    if (file) {
-      if (!file.type.includes('pdf')) {
-        setFileError('Please upload only PDF files');
-        return;
-      }
-
-      if (file.size > 10 * 1024 * 1024) {
-        setFileError('File size must be less than 10MB');
-        return;
-      }
-
-      setFormData((prev) => ({ ...prev, resume: file }));
-      setFileName(file.name);
-      setFileSize(formatFileSize(file.size));
-      // Clear resume-related error when valid file is uploaded
-      if (error === 'Please upload a resume.') {
-        setError(null);
-      }
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    
-    if (file) {
-      if (!file.type.includes('pdf')) {
-        setFileError('Please upload only PDF files');
-        return;
-      }
-
-      if (file.size > 10 * 1024 * 1024) {
-        setFileError('File size must be less than 10MB');
-        return;
-      }
-
-      setFormData((prev) => ({ ...prev, resume: file }));
-      setFileName(file.name);
-      setFileSize(formatFileSize(file.size));
-      // Clear resume-related error when valid file is uploaded
-      if (error === 'Please upload a resume.') {
-        setError(null);
-      }
-    }
-  };
-
+  // Form submission and reset
   const clearForm = () => {
     setFormData({
       first_name: '',
@@ -142,7 +126,7 @@ const ApplyToJob = () => {
   
     try {
       await applyToJob(Number(jobId), formData);
-      clearForm(); // Clear form fields before showing modal
+      clearForm();
       setShowSuccessModal(true);
     } catch (err) {
       setError(err?.message || 'An unexpected error occurred. Please try again.');
@@ -155,6 +139,35 @@ const ApplyToJob = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  // Show error UI if job doesn't load
+  if (jobLoadError || !job) {
+    return (
+      <div className="bg-gray-50 min-h-screen">
+        <div className="max-w-3xl mx-auto px-4 py-16 pt-24">
+          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+            <div className="flex justify-center mb-4">
+              <AlertTriangle className="h-16 w-16 text-orange-500" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-3">
+              {!job ? "Job Not Found" : "Something Went Wrong"}
+            </h1>
+            <p className="text-gray-600 mb-6 max-w-lg mx-auto">
+              {!job 
+                ? "The job you're looking for is no longer available or may have been removed. Please check the URL or browse our other open positions."
+                : "We're having trouble loading this job's details. This could be due to a server error or network issue."}
+            </p>
+            <button
+              onClick={() => navigate('/careers')}
+              className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition duration-200 font-medium"
+            >
+              Back to Job Listings
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -188,7 +201,6 @@ const ApplyToJob = () => {
                     required
                   />
                 </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="last_name">Last Name</Label>
                   <Input
@@ -219,7 +231,7 @@ const ApplyToJob = () => {
                   value={formData.educational_level}
                   onValueChange={handleSelectChange}
                 >
-                  <SelectTrigger className=" bg-white text-black">
+                  <SelectTrigger className="bg-white text-black">
                     <SelectValue placeholder="Select education level" />
                   </SelectTrigger>
                   <SelectContent>

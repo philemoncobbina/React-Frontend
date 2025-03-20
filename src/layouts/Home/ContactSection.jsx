@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { submitContactForm } from "../../Services/ContactService";
+import { motion } from 'framer-motion';
+import { Mail, Phone, MapPin, ArrowRight, CheckCircle, X, Loader2 } from 'lucide-react';
 
 export const useContactForm = () => {
   const [formData, setFormData] = useState({
@@ -10,18 +12,28 @@ export const useContactForm = () => {
     message: '',
   });
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);  // For loading spinner
-  const [errorMessage, setErrorMessage] = useState("");  // For error message
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [agreeToPolicy, setAgreeToPolicy] = useState(false);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [id]: value }));
   };
 
+  const handleCheckboxChange = (e) => {
+    setAgreeToPolicy(e.target.checked);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);  // Show spinner on submit
-    setErrorMessage("");  // Clear any previous error message
+    if (!agreeToPolicy) {
+      setErrorMessage("Please agree to our privacy policy to proceed.");
+      return;
+    }
+    
+    setIsLoading(true);
+    setErrorMessage("");
 
     try {
       await submitContactForm(formData);
@@ -33,11 +45,12 @@ export const useContactForm = () => {
         phoneNumber: '',
         message: '',
       });
-      setIsLoading(false);  // Hide spinner after submission
+      setAgreeToPolicy(false);
+      setIsLoading(false);
     } catch (error) {
       console.error('Failed to submit form:', error);
-      setErrorMessage("There was an error submitting your form. Please try again.");  // Set error message
-      setIsLoading(false);  // Hide spinner after error
+      setErrorMessage("There was an error submitting your form. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -46,7 +59,9 @@ export const useContactForm = () => {
     isAlertOpen,
     isLoading,
     errorMessage,
+    agreeToPolicy,
     handleInputChange,
+    handleCheckboxChange,
     handleSubmit,
     setIsAlertOpen,
   };
@@ -58,218 +73,297 @@ const ContactSection = () => {
     isAlertOpen,
     isLoading,
     errorMessage,
+    agreeToPolicy,
     handleInputChange,
+    handleCheckboxChange,
     handleSubmit,
     setIsAlertOpen,
   } = useContactForm();
 
+  const inputClasses = "w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200";
+  
   return (
-    <section className="overflow-hidden">
-      <div className="container px-4 mx-auto pt-16 pb-20">
-        <div className="flex flex-wrap -mx-4">
-          <div className="w-full lg:w-1/2 p-4">
-            <div className="max-w-xl mx-auto">
-              <h1 className="text-3xl lg:text-5xl font-bold font-heading mb-4">Contact us</h1>
-              <p className="text-gray-600 mb-10">Submit your info and we’ll get back to you as soon as possible.</p>
-              <div className="mb-10 flex items-center gap-1">
-                <div className="bg-orange-200 rounded-3xl h-px w-3"></div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="3" height="3" viewBox="0 0 3 3" fill="none">
-                  <circle cx="1.5" cy="1.5" r="1.5" fill="#FFA632"></circle>
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="3" height="3" viewBox="0 0 3 3" fill="none">
-                  <circle cx="1.5" cy="1.5" r="1.5" fill="#FFA632"></circle>
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="3" height="3" viewBox="0 0 3 3" fill="none">
-                  <circle cx="1.5" cy="1.5" r="1.5" fill="#FFA632"></circle>
-                </svg>
-                <div className="bg-orange-200 rounded-3xl h-px w-3"></div>
-              </div>
-              <div className="flex items-center flex-wrap gap-3 mb-4">
-                <div className="bg-orange-500 rounded-xl p-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M18.3333 17.7083H1.66666C1.32499 17.7083 1.04166 17.9916 1.04166 18.3333C1.04166 18.675 1.32499 18.9583 1.66666 18.9583H18.3333C18.675 18.9583 18.9583 18.675 18.9583 18.3333C18.9583 17.9916 18.675 17.7083 18.3333 17.7083Z" fill="white"></path>
-                    <path d="M14.1667 1.66669H5.83333C3.33333 1.66669 2.5 3.15835 2.5 5.00002V18.3334H17.5V5.00002C17.5 3.15835 16.6667 1.66669 14.1667 1.66669ZM8.33333 14.375H5.83333C5.49167 14.375 5.20833 14.0917 5.20833 13.75C5.20833 13.4084 5.49167 13.125 5.83333 13.125H8.33333C8.675 13.125 8.95833 13.4084 8.95833 13.75C8.95833 14.0917 8.675 14.375 8.33333 14.375ZM8.33333 10.625H5.83333C5.49167 10.625 5.20833 10.3417 5.20833 10C5.20833 9.65835 5.49167 9.37502 5.83333 9.37502H8.33333C8.675 9.37502 8.95833 9.65835 8.95833 10C8.95833 10.3417 8.675 10.625 8.33333 10.625ZM8.33333 6.87502H5.83333C5.49167 6.87502 5.20833 6.59169 5.20833 6.25002C5.20833 5.90835 5.49167 5.62502 5.83333 5.62502H8.33333C8.675 5.62502 8.95833 5.90835 8.95833 6.25002C8.95833 6.59169 8.675 6.87502 8.33333 6.87502ZM14.1667 14.375H11.6667C11.325 14.375 11.0417 14.0917 11.0417 13.75C11.0417 13.4084 11.325 13.125 11.6667 13.125H14.1667C14.5083 13.125 14.7917 13.4084 14.7917 13.75C14.7917 14.0917 14.5083 14.375 14.1667 14.375ZM14.1667 10.625H11.6667C11.325 10.625 11.0417 10.3417 11.0417 10C11.0417 9.65835 11.325 9.37502 11.6667 9.37502H14.1667C14.5083 9.37502 14.7917 9.65835 14.7917 10C14.7917 10.3417 14.5083 10.625 14.1667 10.625ZM14.1667 6.87502H11.6667C11.325 6.87502 11.0417 6.59169 11.0417 6.25002C11.0417 5.90835 11.325 5.62502 11.6667 5.62502H14.1667C14.5083 5.62502 14.7917 5.90835 14.7917 6.25002C14.7917 6.59169 14.5083 6.87502 14.1667 6.87502Z" fill="white"></path>
-                  </svg>
-                </div>
-                <h2 className="text-xl font-bold font-heading">Company HQ</h2>
-              </div>
-              <div className="contact-info">
-                <div className="contact-item -mb-6">
-                  <h2 className="text font-bold font-heading">Address</h2>
-                  <p className="text-gray-600 mb-10">4140 Parker Rd. Allentown, New Mexico 31134</p>
-                </div>
-
-                <div className="contact-item -mb-6 mt-0">
-                  <h2 className="text font-bold font-heading">Phone</h2>
-                  <p className="text-gray-600 mb-10">
-                    <a href="tel:+2334590737" className="text-gray-600 hover:underline">+233 45 90737</a>
-                  </p>
-                </div>
-
-                <div className="contact-item">
-                  <h2 className="text font-bold font-heading">Email</h2>
-                  <p className="text-gray-600 mb-10">
-                    <a href="mailto:hello@yourdomain.com" className="text-gray-600 hover:underline">hello@yourdomain.com</a>
-                  </p>
-                </div>
-              </div>
-              <div className="rounded-3xl border border-gray-200 shadow-sm py-8">
-                <div className="relative">
-                  <div className="absolute top-0 left-0 bg-orange-500 w-1 h-8"></div>
-                  <div className="px-8">
-                    <h2 className="text-xl font-bold font-heading mb-6">Technical Help desk</h2>
-                    <a className="w-full sm:w-auto h-12 py-3 px-5 rounded-full bg-purple-900 border border-purple-700 hover:bg-purple-800 focus:ring focus:ring-purple-800 transition duration-200 inline-flex items-center justify-center gap-2" href="/contact/raiseticket">
-                      <span className="text-white text-sm font-semibold">Raise A Ticket</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                        <path d="M5 10H15.4167M15.4167 10L10.4167 5M15.4167 10L10.4167 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Additional sections like Company Info */}
-            </div>
+    <section className="py-20 bg-gradient-to-b from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+      <div className="container mx-auto px-4">
+        {/* Section Header with animated underline */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4 leading-tight">
+            Get in <span className="text-blue-600 dark:text-blue-400">Touch</span>
+          </h2>
+          <div className="flex justify-center">
+            <div className="w-24 h-1 bg-blue-600 rounded-full mb-6"></div>
           </div>
-
-          <div className="w-full lg:w-1/2 p-4">
-            <div className="max-w-xl mx-auto border border-gray-200 rounded-3xl p-6 max-w-xl mx-auto">
-              <form onSubmit={handleSubmit}>
-                <h2 className="text-3xl text-center font-bold font-heading mb-4">Get in touch</h2>
-                <p className="text-center text-gray-600 mb-16">Fill out the form to connect with a member of our team.</p>
-
-                {/* Form Fields */}
-                <div className="grid gap-6 mb-6 md:grid-cols-2">
-                  <div>
-                    <label htmlFor="firstName" className="block mb-2 text-gray-800 font-medium">First Name</label>
-                    <input
-                      type="text"
-                      id="firstName"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="John"
-                      required
-                    />
+          <p className="max-w-2xl mx-auto text-gray-600 dark:text-gray-300 text-lg">
+            We'd love to hear from you. Fill out the form and we'll get back to you as soon as possible.
+          </p>
+        </div>
+        
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-10 items-stretch">
+            {/* Contact Information Column */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="lg:w-5/12 bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden"
+            >
+              <div className="h-full relative overflow-hidden">
+                {/* Decorative background gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/5 z-0"></div>
+                
+                <div className="relative z-10 p-8 md:p-10 h-full flex flex-col">
+                  <div className="mb-10">
+                    <h3 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">Contact Information</h3>
+                    <p className="text-gray-600 dark:text-gray-300">Reach out to us through any of these channels.</p>
                   </div>
-                  <div>
-                    <label htmlFor="lastName" className="block mb-2 text-gray-800 font-medium">Last Name</label>
-                    <input
-                      type="text"
-                      id="lastName"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="Doe"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block mb-2 text-gray-800 font-medium">Email</label>
-                    <input
-                      type="email"
-                      id="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="john.doe@example.com"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block mb-2 text-gray-800 font-medium">Phone</label>
-                    <input
-                      type="tel"
-                      id="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handleInputChange}
-                      className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      placeholder="+233 45 90737"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <label htmlFor="message" className="lock mb-2 text-gray-800 font-medium">Message</label>
-                  <textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    rows="4"
-                    className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Your message here..."
-                    required
-                  ></textarea>
-                </div>
-
-                {/* Error Message */}
-                {errorMessage && (
-                  <div className="mb-4 text-red-600 text-center">
-                    <p>{errorMessage}</p>
-                  </div>
-                )}
-
-                <div className="w-full px-2 mb-4">
-                  <label className="inline-flex">
-                    <input type="checkbox" />
-                    <span className="ml-2 text-sm text-gray-500">I agree to our friendly <a className="text-orange-500" href="#">privacy policy</a>.</span>
-                  </label>
-                </div>
-
-                <button 
-                  className="block w-full p-4 text-sm font-semibold leading-none bg-orange-500 hover:bg-orange-700 text-white rounded"
-                  type="submit"
-                  disabled={isLoading}  // Disable the button during loading
-                >
-                  {isLoading ? (
-                    <div className="flex justify-center items-center space-x-2">
-                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                        <path fill="currentColor" d="M4 12a8 8 0 0116 0" />
-                      </svg>
-                      <span>Submitting...</span>
+                  
+                  {/* Contact details with icons */}
+                  <div className="space-y-8 mb-auto">
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mr-4">
+                        <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Address</h4>
+                        <p className="text-gray-600 dark:text-gray-300">4140 Parker Rd. Allentown, New Mexico 31134</p>
+                      </div>
                     </div>
-                  ) : (
-                    "Submit"
-                  )}
-                </button>
-              </form>
-
-              {isAlertOpen && (
-                <div
-                  className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50"
-                  role="dialog"
-                  aria-labelledby="modal-title"
-                  aria-hidden={!isAlertOpen}
-                >
-                  <div className="bg-white rounded-lg shadow-lg w-full max-w-sm mx-4 p-6 relative">
-                    <h3 id="modal-title" className="text-xl font-semibold text-green-700 mb-4">
-                      Success!
-                    </h3>
-                    <p className="text-green-700 mb-4">Your message has been sent successfully!</p>
-                    <button
-                      onClick={() => setIsAlertOpen(false)}
-                      className="absolute top-2 right-2 text-green-500 hover:text-green-700"
-                      aria-label="Close"
-                    >
-                      <svg
-                        className="fill-current h-6 w-6"
-                        role="button"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                      >
-                        <title>Close</title>
-                        <path d="M14.348 5.652a1 1 0 00-1.414 0L10 8.586 7.066 5.652a1 1 0 00-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 001.414 1.414L10 11.414l2.934 2.934a1 1 0 001.414-1.414L11.414 10l2.934-2.934a1 1 0 000-1.414z" />
-                      </svg>
-                    </button>
+                    
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mr-4">
+                        <Phone className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Phone</h4>
+                        <a 
+                          href="tel:+2334590737" 
+                          className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        >
+                          +233 45 90737
+                        </a>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start">
+                      <div className="flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full mr-4">
+                        <Mail className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Email</h4>
+                        <a 
+                          href="mailto:hello@yourdomain.com" 
+                          className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                        >
+                          hello@yourdomain.com
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Technical support card */}
+                  <div className="mt-10 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border border-blue-100 dark:border-gray-600">
+                    <div className="flex items-start mb-4">
+                      <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                          <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                          <line x1="12" y1="22" x2="12" y2="12"></line>
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xl text-gray-800 dark:text-white">Technical Help Desk</h4>
+                        <p className="text-gray-600 dark:text-gray-300 mt-1 mb-4">Need technical assistance? Our support team is ready to help.</p>
+                        <a 
+                          href="/contact/raiseticket" 
+                          className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 group"
+                        >
+                          <span>Raise A Ticket</span>
+                          <ArrowRight className="ml-2 w-4 h-4 transform transition-transform group-hover:translate-x-1" />
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            </motion.div>
+            
+            {/* Contact Form Column */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="lg:w-7/12 bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden"
+            >
+              <div className="p-8 md:p-10">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="mb-6">
+                    <h3 className="text-3xl font-bold text-gray-800 dark:text-white mb-2">Send Us a Message</h3>
+                    <p className="text-gray-600 dark:text-gray-300">Fill out the form below to connect with a member of our team.</p>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        First Name
+                      </label>
+                      <input
+                        type="text"
+                        id="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className={inputClasses}
+                        placeholder="John"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Last Name
+                      </label>
+                      <input
+                        type="text"
+                        id="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className={inputClasses}
+                        placeholder="Doe"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={inputClasses}
+                        placeholder="john.doe@example.com"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        id="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        className={inputClasses}
+                        placeholder="+233 45 90737"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Your Message
+                    </label>
+                    <textarea
+                      id="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      rows="5"
+                      className={inputClasses}
+                      placeholder="How can we help you today?"
+                      required
+                    ></textarea>
+                  </div>
+                  
+                  {/* Error message */}
+                  {errorMessage && (
+                    <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-4 text-red-600 dark:text-red-400 text-sm">
+                      <div className="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {errorMessage}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-start">
+                    <div className="flex items-center h-5">
+                      <input
+                        id="agree"
+                        type="checkbox"
+                        checked={agreeToPolicy}
+                        onChange={handleCheckboxChange}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </div>
+                    <label htmlFor="agree" className="ml-3 text-sm text-gray-600 dark:text-gray-300">
+                      I agree to your <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">privacy policy</a>
+                    </label>
+                  </div>
+                  
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full py-3 px-6 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg transition-colors disabled:opacity-70"
+                  >
+                    {isLoading ? (
+                      <div className="flex justify-center items-center space-x-2">
+                        <Loader2 className="animate-spin h-5 w-5" />
+                        <span>Submitting...</span>
+                      </div>
+                    ) : (
+                      <span>Send Message</span>
+                    )}
+                  </button>
+                </form>
+              </div>
+            </motion.div>
           </div>
         </div>
       </div>
+      
+      {/* Success Modal */}
+      {isAlertOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+          >
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-gray-800 dark:text-white flex items-center">
+                  <CheckCircle className="w-6 h-6 text-green-500 mr-2" />
+                  Message Sent Successfully
+                </h3>
+                <button 
+                  onClick={() => setIsAlertOpen(false)}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 mb-4">
+                <p className="text-green-800 dark:text-green-200">
+                  Thank you for reaching out! We've received your message and will get back to you as soon as possible.
+                </p>
+              </div>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setIsAlertOpen(false)}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
 };

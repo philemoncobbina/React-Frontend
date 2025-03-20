@@ -8,19 +8,28 @@ export default function AboutSection() {
   const aboutSectionRef = useRef(null);
   const intervalIdRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const totalSlides = 3;
 
-  useEffect(() => {
-    const handleNextSlide = () => {
-      if (carouselApiRef.current) {
+  // Function to start the automatic sliding
+  const startAutoSlide = () => {
+    if (intervalIdRef.current) {
+      clearInterval(intervalIdRef.current);
+    }
+    
+    intervalIdRef.current = setInterval(() => {
+      if (carouselApiRef.current && !isPaused) {
         carouselApiRef.current.scrollNext();
       }
-    };
+    }, 5000);
+  };
 
+  // Intersection Observer setup
+  useEffect(() => {
     const observerCallback = (entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          intervalIdRef.current = setInterval(handleNextSlide, 5000);
+        if (entry.isIntersecting && !isPaused) {
+          startAutoSlide();
         } else {
           if (intervalIdRef.current) {
             clearInterval(intervalIdRef.current);
@@ -48,9 +57,9 @@ export default function AboutSection() {
         clearInterval(intervalIdRef.current);
       }
     };
-  }, []);
+  }, [isPaused]);
 
-  // Handle carousel change
+  // Handle carousel change to update active index
   useEffect(() => {
     if (carouselApiRef.current) {
       carouselApiRef.current.on("select", () => {
@@ -58,6 +67,28 @@ export default function AboutSection() {
       });
     }
   }, []);
+
+  // Effect to restart the timer when pause state changes
+  useEffect(() => {
+    if (!isPaused && aboutSectionRef.current) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            startAutoSlide();
+          }
+        },
+        { threshold: 0.5 }
+      );
+      
+      observer.observe(aboutSectionRef.current);
+      return () => {
+        observer.disconnect();
+        if (intervalIdRef.current) {
+          clearInterval(intervalIdRef.current);
+        }
+      };
+    }
+  }, [isPaused]);
 
   const values = [
     {
@@ -105,7 +136,12 @@ export default function AboutSection() {
           >
             <CarouselContent>
               {values.map((value, index) => (
-                <CarouselItem key={index} className="md:basis-4/5 lg:basis-3/4">
+                <CarouselItem 
+                  key={index} 
+                  className="md:basis-4/5 lg:basis-3/4"
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                >
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -160,7 +196,11 @@ export default function AboutSection() {
             {Array.from({ length: totalSlides }).map((_, index) => (
               <button
                 key={index}
-                onClick={() => carouselApiRef.current?.scrollTo(index)}
+                onClick={() => {
+                  if (carouselApiRef.current) {
+                    carouselApiRef.current.scrollTo(index);
+                  }
+                }}
                 className={`w-3 h-3 rounded-full transition-all duration-300 ${
                   activeIndex === index 
                     ? "bg-blue-600 w-8" 
