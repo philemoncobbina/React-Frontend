@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Button from 'react-bootstrap/Button';
 import { FaChevronDown } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -10,7 +8,7 @@ import {
 } from "@/components/ui/popover";
 
 import { getUserDetails } from "../Services/ChangePassword";
-import { isLoggedIn, logout } from "../Services/Login"; // Corrected import statement
+import { logout } from "../Services/Login";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,9 +41,16 @@ const Navbar = () => {
       : 'text-gray-500 hover:text-gray-700';
   };
 
+  const navLinks = [
+    { path: '/about', label: 'About' },
+    { path: '/admission', label: 'Admission' },
+    { path: '/blog', label: 'Blog' },
+    { path: '/careers', label: 'Careers' },
+  ];
+
   return (
     <nav className="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
-      <div style={{ height: '70px' }} className="max-w-7xl mx-auto px-4 pt-3 ">
+      <div style={{ height: '70px' }} className="max-w-7xl mx-auto px-4 pt-3">
         <div className="flex justify-between">
           <div className="flex">
             <div className="flex-shrink-0">
@@ -54,30 +59,15 @@ const Navbar = () => {
               </a>
             </div>
             <div className="hidden md:ml-6 md:flex md:space-x-8">
-              <a
-                href="/about"
-                className={`${getLinkClass('/about')} px-3 py-2 rounded-md text-sm font-medium no-underline`}
-              >
-                About
-              </a>
-              <a
-                href="/admission"
-                className={`${getLinkClass('/admission')} px-3 py-2 rounded-md text-sm font-medium no-underline`}
-              >
-                Admission
-              </a>
-              <a
-                href="/blog"
-                className={`${getLinkClass('/blog')} px-3 py-2 rounded-md text-sm font-medium no-underline`}
-              >
-                Blog
-              </a>
-              <a
-                href="/careers"
-                className={`${getLinkClass('/careers')} px-3 py-2 rounded-md text-sm font-medium no-underline`}
-              >
-                Careers
-              </a>
+              {navLinks.map(link => (
+                <a
+                  key={link.path}
+                  href={link.path}
+                  className={`${getLinkClass(link.path)} px-3 py-2 rounded-md text-sm font-medium no-underline`}
+                >
+                  {link.label}
+                </a>
+              ))}
             </div>
           </div>
           <div className="hidden md:flex items-center space-x-4">
@@ -93,7 +83,7 @@ const Navbar = () => {
                   {`${user.first_name} ${user.last_name}`}
                   <FaChevronDown className="h-3 w-5 ml-2" />
                 </PopoverTrigger>
-                <PopoverContent className="w-48 p-0">
+                <PopoverContent className="w-48 p-0 bg-white">
                   <div className="py-1">
                     <a href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer">
                       Profile
@@ -137,36 +127,15 @@ const Navbar = () => {
               aria-expanded="false"
             >
               <span className="sr-only">Open main menu</span>
-              <svg
-                className={`${isOpen ? 'hidden' : 'block'} h-6 w-6`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
-              <svg
-                className={`${isOpen ? 'block' : 'hidden'} h-6 w-6`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              {isOpen ? (
+                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
@@ -174,30 +143,15 @@ const Navbar = () => {
 
       <div className={`${isOpen ? 'block' : 'hidden'} md:hidden`} id="mobile-menu">
         <div className="px-2 pt-2 pb-3 space-y-1">
-          <a
-            href="/about"
-            className={`${getLinkClass('/about')} block px-3 py-2 rounded-md text-base font-medium no-underline`}
-          >
-            About
-          </a>
-          <a
-            href="/admission"
-            className={`${getLinkClass('/admission')} block px-3 py-2 rounded-md text-base font-medium no-underline`}
-          >
-            Admission
-          </a>
-          <a
-            href="/careers"
-            className={`${getLinkClass('/careers')} block px-3 py-2 rounded-md text-base font-medium no-underline`}
-          >
-            Career
-          </a>
-          <a
-            href="/blog"
-            className={`${getLinkClass('/blog')} block px-3 py-2 rounded-md text-base font-medium no-underline`}
-          >
-            Blog
-          </a>
+          {navLinks.map(link => (
+            <a
+              key={link.path}
+              href={link.path}
+              className={`${getLinkClass(link.path)} block px-3 py-2 rounded-md text-base font-medium no-underline`}
+            >
+              {link.label}
+            </a>
+          ))}
           <a
             href="/contact"
             className={`${getLinkClass('/contact')} block px-3 py-2 rounded-md text-base font-medium no-underline`}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react';
 import BlurFade from '@/components/magicui/blur-fade';
@@ -162,15 +162,14 @@ const HomeHero = () => {
     });
   };
 
-  // Fixed enrollment navigation function
-  const handleEnrollClick = () => {
-    // Using navigate without event prevention - this is the key fix
-    navigate('/admission');
-    console.log('Navigation triggered to /admission');  // Debug log
-  };
-
   const handleImageClick = (e) => {
     e.stopPropagation();
+  };
+
+  // Handle direct navigation without event handling
+  const navigateToAdmission = () => {
+    navigate('/admission');
+    console.log('Direct navigation to admission triggered');
   };
 
   useEffect(() => {
@@ -235,13 +234,13 @@ const HomeHero = () => {
                 </div>
               </div>
               
-              {/* Fixed Enroll button */}
-              <button
-                onClick={handleEnrollClick}
-                className="inline-block rounded-md border border-transparent bg-black px-8 py-3 text-center font-medium text-white hover:bg-indigo-700 cursor-pointer"
+              {/* Fixed enrollment navigation - React Router Link component */}
+              <Link 
+                to="/admission"
+                className="inline-block rounded-md border border-transparent bg-black px-8 py-3 text-center font-medium text-white  cursor-pointer z-10 relative"
               >
                 Enrol Now
-              </button>
+              </Link>
             </div>
           </div>
         </div>

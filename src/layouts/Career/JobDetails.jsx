@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchJobDetails } from '../../Services/jobService';
-import { Share2, MapPin, Calendar, Building, ExternalLink, Briefcase, DollarSign, FileText, AlertTriangle } from 'lucide-react';
+import { Share2, MapPin, Calendar, Building, ExternalLink, Briefcase, DollarSign, FileText, AlertTriangle, Copy, Check } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
@@ -14,6 +14,7 @@ const JobDetails = () => {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   // Function to generate a slug from the job title
   const generateSlug = (title) => {
@@ -56,6 +57,14 @@ const JobDetails = () => {
   const handleShare = (platform) => {
     const url = window.location.href;
     const title = job?.title;
+
+    if (platform === 'copy') {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+      return;
+    }
 
     const shareUrls = {
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
@@ -105,8 +114,9 @@ const JobDetails = () => {
     );
   }
 
-  // Share options for the popover
+  // Share options for the popover, now including Copy Link
   const shareOptions = [
+    { platform: 'copy', label: copied ? 'Copied!' : 'Copy Link', icon: copied ? Check : Copy },
     { platform: 'linkedin', label: 'LinkedIn' },
     { platform: 'twitter', label: 'Twitter' },
     { platform: 'facebook', label: 'Facebook' },
@@ -153,14 +163,15 @@ const JobDetails = () => {
                   <Share2 className="w-4 h-4" />
                   <span className="text-sm">Share</span>
                 </PopoverTrigger>
-                <PopoverContent className="w-44 p-1.5">
+                <PopoverContent className="w-44 p-1.5 bg-white">
                   <div className="flex flex-col">
-                    {shareOptions.map(({ platform, label }) => (
+                    {shareOptions.map(({ platform, label, icon: Icon }) => (
                       <button
                         key={platform}
                         onClick={() => handleShare(platform)}
-                        className="w-full px-3 py-2 text-sm text-gray-700 text-left hover:bg-gray-50 rounded-md transition-colors duration-150"
+                        className="w-full px-3 py-2 text-sm text-gray-700 text-left hover:bg-gray-50 rounded-md transition-colors duration-150 flex items-center gap-2"
                       >
+                        {Icon && <Icon className="w-4 h-4" />}
                         {label}
                       </button>
                     ))}
