@@ -12,7 +12,7 @@ const AboutPage = () => {
   return (
     <div>
       <Helmet>
-        <title>Ridoana - About Us</title>
+        <title>About Us</title>
         <meta name="description" content="Learn more about Ridoana, our team, history, and values." />
       </Helmet>
       <Navbar />

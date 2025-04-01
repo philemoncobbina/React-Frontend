@@ -10,7 +10,7 @@ const AdmissionPage = () => {
   return (
     <>
       <Helmet>
-        <title>Ridoana - Admission</title>
+        <title>Admission</title>
         <meta name="description" content="Apply for admission to Ridoana and explore the admission tools and notes." />
       </Helmet>
       <Navbar />

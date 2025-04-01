@@ -225,16 +225,16 @@ const ApplyToJob = () => {
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 ">
                 <Label htmlFor="educational_level">Educational Level</Label>
-                <Select
+                <Select className="space-y-2 "
                   value={formData.educational_level}
                   onValueChange={handleSelectChange}
                 >
                   <SelectTrigger className="bg-white text-black">
                     <SelectValue placeholder="Select education level" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white ">
                     <SelectItem value="HIGH_SCHOOL">High School</SelectItem>
                     <SelectItem value="ASSOCIATE">Associate Degree</SelectItem>
                     <SelectItem value="BACHELOR">Bachelor's Degree</SelectItem>

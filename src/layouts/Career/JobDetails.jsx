@@ -128,7 +128,7 @@ const JobDetails = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24">
         {/* Back button */}
         <button 
-          onClick={() => navigate('/vacancy')} 
+          onClick={() => navigate('/careers/vacancy')} 
           className="flex items-center text-blue-600 hover:text-blue-700 mb-6 transition duration-200"
         >
           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

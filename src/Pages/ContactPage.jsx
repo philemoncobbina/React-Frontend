@@ -10,7 +10,7 @@ const ContactPage = () => {
   return (
     <div>
       <Helmet>
-        <title>Ridoana - Contact Us</title>
+        <title>Contact Us</title>
         <meta name="description" content="Get in touch with Ridoana for inquiries, support, and more. Find our contact details and working hours here." />
       </Helmet>
       <Navbar />

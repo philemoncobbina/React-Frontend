@@ -9,7 +9,7 @@ const BlogPage = () => {
   return (
     <div>
       <Helmet>
-        <title>Ridoana - Blog</title>
+        <title>Blog</title>
         <meta name="description" content="Stay updated with the latest news and articles on Ridoana's blog." />
       </Helmet>
       <Navbar />
